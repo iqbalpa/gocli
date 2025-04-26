@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"main/model"
 	"os"
+	"strconv"
 	"strings"
 )
 
 const COMMAND_ADD = "add"
 const COMMAND_LIST = "list"
+const COMMAND_DELETE = "delete"
 
 func main() {
+	fmt.Println("Program started :)")
 	reader := bufio.NewReader(os.Stdin)
 
 	// create task storage model
@@ -36,6 +39,8 @@ func main() {
 			case COMMAND_LIST:
 				res := getList(&ts)
 				fmt.Println("List Tasks:\n", *res)
+			case COMMAND_DELETE:
+				delete(&ts, words[2])
 			default:
 				fmt.Println("Program stopped.")
 				break LOOP
@@ -45,7 +50,7 @@ func main() {
 
 func add(ts *model.TaskStorage, s string) {
 	// create new task
-	t := model.Task{Name: s}
+	t := model.Task{Name: s, Id: ts.IdCounter}
 	// add task
 	ts.AddTask(&t)
 }
@@ -53,4 +58,12 @@ func add(ts *model.TaskStorage, s string) {
 func getList(ts *model.TaskStorage) (*[]model.Task) {
 	res, _ := ts.ListTasks()
 	return res
+}
+
+func delete(ts *model.TaskStorage, id string) {
+	idInt, _ := strconv.Atoi(id)
+	err := ts.DeleteTaskById(idInt)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
