@@ -12,6 +12,7 @@ type TaskStorage struct {
 type Task struct {
 	Id				int
 	Name 			string
+	Completed bool
 }
 
 func (ts *TaskStorage) Init() {
@@ -36,6 +37,16 @@ func (ts *TaskStorage) DeleteTaskById(id int) error {
 		if (v.Id == id) {
 			deleteIdx = i
 			ts.Tasks = append(ts.Tasks[:deleteIdx], ts.Tasks[deleteIdx+1:]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("Task with id %d not found", id)
+}
+
+func (ts *TaskStorage) CompleteTaskById(id int) error {
+	for i,v := range ts.Tasks {
+		if (v.Id == id) {
+			ts.Tasks[i].Completed = true
 			return nil
 		}
 	}

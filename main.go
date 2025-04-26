@@ -12,6 +12,7 @@ import (
 const COMMAND_ADD = "add"
 const COMMAND_LIST = "list"
 const COMMAND_DELETE = "delete"
+const COMMAND_COMPLETE = "complete"
 
 func main() {
 	fmt.Println("Program started :)")
@@ -41,6 +42,8 @@ func main() {
 				fmt.Println("List Tasks:\n", *res)
 			case COMMAND_DELETE:
 				delete(&ts, words[2])
+			case COMMAND_COMPLETE:
+				complete(&ts, words[2])
 			default:
 				fmt.Println("Program stopped.")
 				break LOOP
@@ -50,7 +53,11 @@ func main() {
 
 func add(ts *model.TaskStorage, s string) {
 	// create new task
-	t := model.Task{Name: s, Id: ts.IdCounter}
+	t := model.Task{
+		Name: s, 
+		Id: ts.IdCounter, 
+		Completed: false,
+	}
 	// add task
 	ts.AddTask(&t)
 }
@@ -63,6 +70,14 @@ func getList(ts *model.TaskStorage) (*[]model.Task) {
 func delete(ts *model.TaskStorage, id string) {
 	idInt, _ := strconv.Atoi(id)
 	err := ts.DeleteTaskById(idInt)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func complete(ts *model.TaskStorage, id string) {
+	idInt, _ := strconv.Atoi(id)
+	err := ts.CompleteTaskById(idInt)
 	if err != nil {
 		fmt.Println(err)
 	}
