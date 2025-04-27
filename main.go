@@ -9,10 +9,12 @@ import (
 	"strings"
 )
 
-const COMMAND_ADD = "add"
-const COMMAND_LIST = "list"
-const COMMAND_DELETE = "delete"
-const COMMAND_COMPLETE = "complete"
+const (
+	CommandAdd = "add"
+	CommandList = "list"
+	CommandDelete = "delete"
+	CommandComplete = "complete"
+)
 
 func main() {
 	fmt.Println("Program started :)")
@@ -29,21 +31,23 @@ func main() {
 		words := strings.Split(line, " ")
 		
 		// first word must be "task"
-		if words[0] != "task" {
+		if (words[0] != "task" || len(words) < 2) {
 			fmt.Println("Command error, program exited.")
 			return
 		} 
+
 		command := words[1]
+		arg := words[2]
 		switch command {
-			case COMMAND_ADD:
-				add(&ts, words[2])
-			case COMMAND_LIST:
+			case CommandAdd:
+				add(&ts, arg)
+			case CommandList:
 				res := getList(&ts)
 				fmt.Println("List Tasks:\n", *res)
-			case COMMAND_DELETE:
-				delete(&ts, words[2])
-			case COMMAND_COMPLETE:
-				complete(&ts, words[2])
+			case CommandDelete:
+				delete(&ts, arg)
+			case CommandComplete:
+				complete(&ts, arg)
 			default:
 				fmt.Println("Program stopped.")
 				break LOOP
