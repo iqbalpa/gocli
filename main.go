@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"main/model"
+	"main/service"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -19,6 +19,7 @@ const (
 func main() {
 	fmt.Println("Program started :)")
 	reader := bufio.NewReader(os.Stdin)
+	service := service.Service{}
 
 	// create task storage model
 	ts := model.TaskStorage{}
@@ -37,52 +38,19 @@ func main() {
 		} 
 
 		command := words[1]
-		arg := words[2]
 		switch command {
 			case CommandAdd:
-				add(&ts, arg)
+				service.Add(&ts, words[2])
 			case CommandList:
-				res := getList(&ts)
+				res := service.GetList(&ts)
 				fmt.Println("List Tasks:\n", *res)
 			case CommandDelete:
-				delete(&ts, arg)
+				service.Delete(&ts, words[2])
 			case CommandComplete:
-				complete(&ts, arg)
+				service.Complete(&ts, words[2])
 			default:
 				fmt.Println("Program stopped.")
 				break LOOP
 		}
-	}
-}
-
-func add(ts *model.TaskStorage, s string) {
-	// create new task
-	t := model.Task{
-		Name: s, 
-		Id: ts.IdCounter, 
-		Completed: false,
-	}
-	// add task
-	ts.AddTask(&t)
-}
-
-func getList(ts *model.TaskStorage) (*[]model.Task) {
-	res, _ := ts.ListTasks()
-	return res
-}
-
-func delete(ts *model.TaskStorage, id string) {
-	idInt, _ := strconv.Atoi(id)
-	err := ts.DeleteTaskById(idInt)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func complete(ts *model.TaskStorage, id string) {
-	idInt, _ := strconv.Atoi(id)
-	err := ts.CompleteTaskById(idInt)
-	if err != nil {
-		fmt.Println(err)
 	}
 }
